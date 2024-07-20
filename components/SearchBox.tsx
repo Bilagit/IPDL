@@ -30,20 +30,21 @@ export default function SearchBox() {
       debounce(fetchData)();
     }
   }, [inputValue]);
+
   return (
-    <>
+    <div>
       <input
-        className="bg-gray-200 p-2 rounded-lg w-64"
+        className="bg-gray-200 p-2 rounded-lg w-64 mb-4"
         type="text"
         placeholder="City name"
         value={inputValue}
         onChange={e => setInputValue(e.target.value)}
       />
       {inputValue.length >= MIN_CITY_CHARS && (
-        <ul>
+        <ul className="bg-white border border-gray-300 rounded-lg shadow-md p-4">
           {cities.map(city => (
-            <li key={city.id}>
-              <Link href={`/detail/${city.id}`}>
+            <li key={city.id} className="mb-2">
+              <Link href={`/detail/${city.id}`} className="text-blue-500 hover:underline">
                 {city.name}
                 {city.state ? `, ${city.state}` : ""} ({city.country})
               </Link>
@@ -51,6 +52,6 @@ export default function SearchBox() {
           ))}
         </ul>
       )}
-    </>
+    </div>
   );
 }

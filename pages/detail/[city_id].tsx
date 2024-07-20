@@ -10,13 +10,11 @@ let Cities = cities as CityData[];
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { city_id } = context.query;
-  // Find the city why city Id
-  const city = Cities.find(city => city.id.toString() == city_id);
+  const city = Cities.find(city => city.id.toString() === city_id);
   if (!city) {
     throw new Error("City not found");
   }
-  let url = `https://api.openweathermap.org/data/2.5/weather?lat=${city.coord.lat}&lon=${city.coord.lon}&appid=${process.env.WEATHER_API_KEY}&exclude=minutely&units=metric`;
-  // Fetch the weather data
+  const url = `https://api.openweathermap.org/data/2.5/weather?lat=${city.coord.lat}&lon=${city.coord.lon}&appid=${process.env.WEATHER_API_KEY}&exclude=minutely&units=metric`;
   const res = await fetch(url);
   const weatherData: WeatherData = await res.json();
   if (!weatherData) {
@@ -24,16 +22,18 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   }
   return {
     props: {
-      city: city,
+      city,
       weather: weatherData,
     },
   };
 }
+
 type Props = {
   city: CityData;
   weather: WeatherData;
 };
-export default function funcName({ city, weather }: Props) {
+
+export default function CityDetail({ city, weather }: Props) {
   const iconUrl = `https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`;
   return (
     <>
@@ -41,16 +41,16 @@ export default function funcName({ city, weather }: Props) {
         <title>WeatherWise</title>
       </Head>
       <main className="mt-5 mx-5">
-        <h1 className="text-xl font-medium mb-4">WeatherWise</h1>
-        <Link href="/" className="text-sm">
+        <h1 className="text-3xl font-bold mb-6 text-blue-600">WeatherWise</h1>
+        <Link href="/" className="text-sm text-blue-500 hover:underline">
           &larr; Home
         </Link>
         <div className="py-5">
-          <div className="bg-green-500 rounded p-4">
+          <div className="bg-green-500 rounded p-4 shadow-md">
             <div className="grid grid-cols-2">
               <div>
                 <h2 className="text-2xl mb-4 text-white">
-                  {city.name}({city.country})
+                  {city.name} ({city.country})
                 </h2>
                 <span className="font-medium text-lg text-white">
                   {weather.main.temp_max.toFixed(0)}&deg;C
